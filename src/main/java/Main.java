@@ -1,5 +1,4 @@
 import org.antlr.v4.runtime.*;
-
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -26,9 +25,12 @@ public class Main {
         System.out.print("Podaj fragment gramatyki Solidity: ");
         String input = scanner.nextLine();
 
-        // parsowanie pliku Solidity
+        // parsowanie wprowadzonego fragmentu
         SolidityParser parser = new SolidityParser(new CommonTokenStream(new SolidityLexer(CharStreams.fromString(input))));
         SolidityParser.SourceUnitContext tree = parser.sourceUnit();
 
+        // tworzenie instancji klasy dziedziczącej po SolidityBaseVisitor i przetwarzanie drzewa AST
+        MySolidityVisitor visitor = new MySolidityVisitor();
+        visitor.visit(tree);
     }
 }
