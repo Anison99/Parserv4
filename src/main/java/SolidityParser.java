@@ -4,6 +4,8 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
+
+import javax.swing.*;
 import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -1609,7 +1611,11 @@ public class SolidityParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof SolidityListener ) ((SolidityListener)listener).exitFunctionDefinition(this);
 		}
-	}
+
+        public AbstractButton functionTypeName() {
+			return null;
+        }
+    }
 
 	public final FunctionDefinitionContext functionDefinition() throws RecognitionException {
 		FunctionDefinitionContext _localctx = new FunctionDefinitionContext(_ctx, getState());
@@ -2465,6 +2471,10 @@ public class SolidityParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof SolidityListener ) ((SolidityListener)listener).exitVariableDeclaration(this);
+		}
+
+		public ExpressionContext expression() {
+			return null;
 		}
 	}
 

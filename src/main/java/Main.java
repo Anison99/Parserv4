@@ -1,5 +1,5 @@
 import org.antlr.v4.runtime.*;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 import org.antlr.v4.runtime.CharStreams;
@@ -31,6 +31,21 @@ public class Main {
 
         // tworzenie instancji klasy dziedziczącej po SolidityBaseVisitor i przetwarzanie drzewa AST
         MySolidityVisitor visitor = new MySolidityVisitor();
-        visitor.visit(tree);
+        String code = (String) visitor.visit(tree);
+
+        // zapisywanie kodu do pliku
+        BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/java/GeneratedContract.sol"));
+        writer.write(code);
+        writer.close();
+
+        // kompilacja kodu Solidity
+        String[] command = {"solc", "--bin", "src/main/java/GeneratedContract.sol"};
+        Process process = new ProcessBuilder(command).start();
+        InputStream is = process.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+        }
     }
 }
