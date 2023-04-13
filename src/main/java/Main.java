@@ -1,9 +1,11 @@
 import org.antlr.v4.runtime.*;
 import java.io.*;
-import java.util.Scanner;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.http.HttpService;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -20,32 +22,11 @@ public class Main {
             }
         });
 
-        // pobieranie fragmentu gramatyki Solidity z konsoli
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Podaj fragment gramatyki Solidity: ");
-        String input = scanner.nextLine();
+        // Inicjalizacja połączenia z węzłem Ethereum
+        Web3j web3 = Web3j.build(new HttpService("http://localhost:8545")); // Adres węzła Ethereum
 
-        // parsowanie wprowadzonego fragmentu
-        SolidityParser parser = new SolidityParser(new CommonTokenStream(new SolidityLexer(CharStreams.fromString(input))));
-        SolidityParser.SourceUnitContext tree = parser.sourceUnit();
-
-        // tworzenie instancji klasy dziedziczącej po SolidityBaseVisitor i przetwarzanie drzewa AST
-        MySolidityVisitor visitor = new MySolidityVisitor();
-        String code = (String) visitor.visit(tree);
-
-        // zapisywanie kodu do pliku
-        BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/java/GeneratedContract.sol"));
-        writer.write(code);
-        writer.close();
-
-        // kompilacja kodu Solidity
-        String[] command = {"solc", "--bin", "src/main/java/GeneratedContract.sol"};
-        Process process = new ProcessBuilder(command).start();
-        InputStream is = process.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line);
-        }
+        // Dołączenie klasy implementującej listener do parsera
+        SolidityBaseListener listener = new SolidityBaseListener();
+        ParseTreeWalker.DEFAULT.walk(listener, parserContract.sourceUnit());
     }
 }

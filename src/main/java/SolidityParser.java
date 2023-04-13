@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -5100,6 +5101,14 @@ public class SolidityParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof SolidityListener ) ((SolidityListener)listener).exitFunctionCall(this);
+		}
+
+		public Label identifier() {
+			return null;
+		}
+
+		public ExpressionContext expressionList() {
+			return null;
 		}
 	}
 
