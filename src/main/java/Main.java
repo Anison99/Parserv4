@@ -15,6 +15,7 @@ public class Main {
         SolidityParser parserContract = new SolidityParser(tokens);
 
         // Dodanie ANTLRErrorListener
+        parserContract.removeErrorListeners();
         parserContract.addErrorListener(new BaseErrorListener() {
             @Override
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
@@ -26,7 +27,10 @@ public class Main {
         Web3j web3 = Web3j.build(new HttpService("http://localhost:8545")); // Adres węzła Ethereum
 
         // Dołączenie klasy implementującej listener do parsera
-        SolidityBaseListener listener = new SolidityBaseListener();
+        MyListener listener = new MyListener(web3, inputContract.toString(), parserContract); // adres_kontraktu to adres Twojego smart kontraktu
         ParseTreeWalker.DEFAULT.walk(listener, parserContract.sourceUnit());
+
+        SolidityParser.SourceUnitContext sourceUnitContext = parserContract.sourceUnit();
+        System.out.println(sourceUnitContext.toStringTree(parserContract));
     }
 }
