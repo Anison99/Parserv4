@@ -7,7 +7,10 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
+
 public class Main {
+    MyListener myListener;
+
     public static void main(String[] args) throws IOException {
         CharStream inputContract = CharStreams.fromFileName("src/main/java/MyContract.sol");
         SolidityLexer lexer = new SolidityLexer(inputContract);
@@ -27,10 +30,11 @@ public class Main {
         Web3j web3 = Web3j.build(new HttpService("http://localhost:8545")); // Adres węzła Ethereum
 
         // Dołączenie klasy implementującej listener do parsera
-        MyListener listener = new MyListener(web3, inputContract.toString(), parserContract); // adres_kontraktu to adres Twojego smart kontraktu
+        MyListener listener = new MyListener(web3, inputContract.toString());
         ParseTreeWalker.DEFAULT.walk(listener, parserContract.sourceUnit());
 
         SolidityParser.SourceUnitContext sourceUnitContext = parserContract.sourceUnit();
         System.out.println(sourceUnitContext.toStringTree(parserContract));
+
     }
 }
